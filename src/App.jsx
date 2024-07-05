@@ -7,6 +7,7 @@ import Layout from "@/layouts/default"; // available: default, navbar, sidebar
 import Index from "@/pages/Index";
 import Results from "@/pages/Results";
 import RealTimeTraining from "@/pages/RealTimeTraining";
+import Settings from "@/pages/Settings";
 const queryClient = new QueryClient();
 
 export const navItems = [
@@ -25,6 +26,11 @@ export const navItems = [
     to: "/real-time-training",
     icon: <Train className="h-4 w-4" />,
   },
+  {
+    title: "Settings",
+    to: "/settings",
+    icon: <Settings className="h-4 w-4" />,
+  },
 ];
 
 const App = () => {
@@ -38,6 +44,7 @@ const App = () => {
               <Route index element={<Index />} />
               <Route path="results" element={<Results />} />
               <Route path="real-time-training" element={<RealTimeTraining />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
           </Routes>
         </Router>

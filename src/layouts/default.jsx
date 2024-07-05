@@ -1,5 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 import { navItems } from "@/App";
+import { Settings } from "@/pages/Settings";
 
 const Layout = () => {
   return (
