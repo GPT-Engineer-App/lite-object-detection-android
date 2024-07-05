@@ -42,6 +42,9 @@ const RealTimeTraining = () => {
           toast.success(`Uploaded ${totalFiles} files successfully`);
         }
       };
+      reader.onerror = () => {
+        toast.error(`Failed to upload file: ${file.name}`);
+      };
       reader.readAsDataURL(file);
     });
   };
