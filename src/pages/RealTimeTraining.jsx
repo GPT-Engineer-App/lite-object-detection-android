@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 
 const RealTimeTraining = () => {
   const canvasRef = useRef(null);
@@ -15,10 +16,11 @@ const RealTimeTraining = () => {
   const detectedObjects = useRef(new Set());
   const [objectCounts, setObjectCounts] = useState({ bottle: 0, can: 0, cardboard: 0, 'glass bottle': 0 });
 
-  const [petBottleImage, setPetBottleImage] = useState(null);
-  const [hdpeBottleImage, setHdpeBottleImage] = useState(null);
-  const [aluminiumCanImage, setAluminiumCanImage] = useState(null);
-  const [cardboardCartonImage, setCardboardCartonImage] = useState(null);
+  const [petBottleImages, setPetBottleImages] = useState([]);
+  const [hdpeBottleImages, setHdpeBottleImages] = useState([]);
+  const [aluminiumCanImages, setAluminiumCanImages] = useState([]);
+  const [cardboardCartonImages, setCardboardCartonImages] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const loadModel = async () => {
     const loadedModel = await cocoSsd.load({ backend: 'webgl' });
@@ -26,14 +28,22 @@ const RealTimeTraining = () => {
   };
 
   const handleFileUpload = (event, setImage) => {
-    const file = event.target.files[0];
-    if (file) {
+    const files = Array.from(event.target.files);
+    const totalFiles = files.length;
+    let uploadedFiles = 0;
+
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        setImage((prevImages) => [...prevImages, reader.result]);
+        uploadedFiles += 1;
+        setUploadProgress((uploadedFiles / totalFiles) * 100);
+        if (uploadedFiles === totalFiles) {
+          toast.success(`Uploaded ${totalFiles} files successfully`);
+        }
       };
       reader.readAsDataURL(file);
-    }
+    });
   };
 
   const detectWebcamFeed = () => {
@@ -135,21 +145,22 @@ const RealTimeTraining = () => {
               <div className="space-y-2">
                 <div>
                   <label htmlFor="petBottle">PET Bottle:</label>
-                  <Input type="file" id="petBottle" onChange={(e) => handleFileUpload(e, setPetBottleImage)} />
+                  <Input type="file" id="petBottle" multiple onChange={(e) => handleFileUpload(e, setPetBottleImages)} />
                 </div>
                 <div>
                   <label htmlFor="hdpeBottle">HDPE Bottle:</label>
-                  <Input type="file" id="hdpeBottle" onChange={(e) => handleFileUpload(e, setHdpeBottleImage)} />
+                  <Input type="file" id="hdpeBottle" multiple onChange={(e) => handleFileUpload(e, setHdpeBottleImages)} />
                 </div>
                 <div>
                   <label htmlFor="aluminiumCan">Aluminium Can:</label>
-                  <Input type="file" id="aluminiumCan" onChange={(e) => handleFileUpload(e, setAluminiumCanImage)} />
+                  <Input type="file" id="aluminiumCan" multiple onChange={(e) => handleFileUpload(e, setAluminiumCanImages)} />
                 </div>
                 <div>
                   <label htmlFor="cardboardCarton">Cardboard Carton:</label>
-                  <Input type="file" id="cardboardCarton" onChange={(e) => handleFileUpload(e, setCardboardCartonImage)} />
+                  <Input type="file" id="cardboardCarton" multiple onChange={(e) => handleFileUpload(e, setCardboardCartonImages)} />
                 </div>
               </div>
+              <Progress value={uploadProgress} className="mt-4" />
             </div>
             <div className="mt-4">
               <h2 className="text-2xl">Detected Objects</h2>
