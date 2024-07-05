@@ -27,22 +27,38 @@ const RealTimeTraining = () => {
     setModel(loadedModel);
   };
 
-  const handleFileUpload = (event, setImage) => {
+  const handleFileUpload = async (event, setImage) => {
     const files = Array.from(event.target.files);
     const totalFiles = files.length;
     let uploadedFiles = 0;
 
-    files.forEach((file) => {
+    for (const file of files) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         setImage((prevImages) => [...prevImages, reader.result]);
         uploadedFiles += 1;
         setUploadProgress((uploadedFiles / totalFiles) * 100);
-        if (uploadedFiles === totalFiles) {
-          toast.success(`Uploaded ${totalFiles} files successfully`);
+
+        // Simulate an upload process
+        try {
+          await uploadImage(reader.result);
+          if (uploadedFiles === totalFiles) {
+            toast.success(`Uploaded ${totalFiles} files successfully`);
+          }
+        } catch (error) {
+          toast.error(`Failed to upload ${file.name}`);
         }
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async (imageData) => {
+    // Simulate an upload process to a server or local storage
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('Upload successful');
+      }, 1000);
     });
   };
 
