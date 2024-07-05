@@ -27,23 +27,41 @@ const RealTimeTraining = () => {
     setModel(loadedModel);
   };
 
-  const handleFileUpload = (event, setImage) => {
+  const handleFileUpload = async (event, setImage) => {
     const files = Array.from(event.target.files);
     const totalFiles = files.length;
     let uploadedFiles = 0;
 
-    files.forEach((file) => {
+    for (const file of files) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         setImage((prevImages) => [...prevImages, reader.result]);
         uploadedFiles += 1;
         setUploadProgress((uploadedFiles / totalFiles) * 100);
         if (uploadedFiles === totalFiles) {
           toast.success(`Uploaded ${totalFiles} files successfully`);
         }
+
+        // Upload logic
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          if (!response.ok) {
+            throw new Error('Upload failed');
+          }
+          const result = await response.json();
+          console.log('Upload successful:', result);
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          toast.error('Error uploading file');
+        }
       };
       reader.readAsDataURL(file);
-    });
+    }
   };
 
   const detectWebcamFeed = () => {
