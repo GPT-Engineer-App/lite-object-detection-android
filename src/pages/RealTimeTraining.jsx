@@ -23,8 +23,13 @@ const RealTimeTraining = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const loadModel = async () => {
-    const loadedModel = await cocoSsd.load({ backend: 'webgl' });
-    setModel(loadedModel);
+    try {
+      const loadedModel = await cocoSsd.load({ backend: 'webgl' });
+      setModel(loadedModel);
+    } catch (error) {
+      toast.error('Failed to load the model');
+      console.error('Error loading model:', error);
+    }
   };
 
   const handleFileUpload = (event, setImage) => {
@@ -89,16 +94,22 @@ const RealTimeTraining = () => {
   };
 
   const startWebcam = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-        detectWebcamFeed();
-      })
-      .catch((err) => {
-        console.error('Error accessing webcam: ', err);
-      });
+    try {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+          detectWebcamFeed();
+        })
+        .catch((err) => {
+          toast.error('Failed to start the webcam');
+          console.error('Error accessing webcam: ', err);
+        });
+    } catch (error) {
+      toast.error('Failed to start the webcam');
+      console.error('Error starting webcam:', error);
+    }
   };
 
   const isInRoi = (x, y, width, height) => {
@@ -138,8 +149,8 @@ const RealTimeTraining = () => {
           <div className="flex flex-col items-center space-y-4">
             <Button onClick={startWebcam}>Start Webcam</Button>
             <Separator />
-            <canvas ref={canvasRef} className="border" />
-            <video ref={videoRef} className="hidden" />
+            <canvas ref={canvasRef} className="border" width="640" height="480" />
+            <video ref={videoRef} className="hidden" width="640" height="480" />
             <div className="mt-4">
               <h2 className="text-2xl">Upload Sample Photos</h2>
               <div className="space-y-2">

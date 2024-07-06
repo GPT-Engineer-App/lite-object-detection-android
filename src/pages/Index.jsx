@@ -16,13 +16,18 @@ const Index = () => {
   const [objectCounts, setObjectCounts] = useState({ bottle: 0, can: 0, cardboard: 0, 'glass bottle': 0 });
 
   const loadModel = async () => {
-    const objectron = new Objectron({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/objectron/${file}`});
-    objectron.setOptions({
-      model: 'Shoe',
-      maxNumObjects: 5,
-    });
-    objectron.onResults(onResults);
-    setObjectron(objectron);
+    try {
+      const objectron = new Objectron({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/objectron/${file}`});
+      objectron.setOptions({
+        model: 'Shoe',
+        maxNumObjects: 5,
+      });
+      objectron.onResults(onResults);
+      setObjectron(objectron);
+    } catch (error) {
+      toast.error('Failed to load the model');
+      console.error('Error loading model:', error);
+    }
   };
 
   const onResults = (results) => {
@@ -49,15 +54,20 @@ const Index = () => {
   };
 
   const startWebcam = () => {
-    const videoElement = videoRef.current;
-    const camera = new Camera(videoElement, {
-      onFrame: async () => {
-        await objectron.send({image: videoElement});
-      },
-      width: 1280,
-      height: 720,
-    });
-    camera.start();
+    try {
+      const videoElement = videoRef.current;
+      const camera = new Camera(videoElement, {
+        onFrame: async () => {
+          await objectron.send({image: videoElement});
+        },
+        width: 1280,
+        height: 720,
+      });
+      camera.start();
+    } catch (error) {
+      toast.error('Failed to start the webcam');
+      console.error('Error starting webcam:', error);
+    }
   };
 
   const isInRoi = (boundingBox) => {
@@ -98,8 +108,8 @@ const Index = () => {
           <div className="flex flex-col items-center space-y-4">
             <Button onClick={startWebcam}>Start Webcam</Button>
             <Separator />
-            <canvas ref={canvasRef} className="border" />
-            <video ref={videoRef} className="hidden" />
+            <canvas ref={canvasRef} className="border" width="640" height="480" />
+            <video ref={videoRef} className="hidden" width="640" height="480" />
             <div className="mt-4">
               <h2 className="text-2xl">Detected Objects</h2>
               <ul>

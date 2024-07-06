@@ -14,9 +14,14 @@ const Settings = () => {
   });
 
   const handleFolderSelection = (event) => {
-    const selectedFolder = event.target.files[0].path;
-    setFolderPath(selectedFolder);
-    toast.success(`Selected folder: ${selectedFolder}`);
+    try {
+      const selectedFolder = event.target.files[0].path;
+      setFolderPath(selectedFolder);
+      toast.success(`Selected folder: ${selectedFolder}`);
+    } catch (error) {
+      toast.error('Failed to select folder');
+      console.error('Error selecting folder:', error);
+    }
   };
 
   const handleToggleChange = (variable) => {

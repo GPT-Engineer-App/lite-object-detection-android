@@ -4,11 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchResults = async () => {
-  const response = await fetch('/api/results');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+  try {
+    const response = await fetch('/api/results');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  } catch (error) {
+    throw new Error(`Fetching results failed: ${error.message}`);
   }
-  return response.json();
 };
 
 const Results = () => {
@@ -17,8 +21,13 @@ const Results = () => {
     queryFn: fetchResults,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div className="container mx-auto p-4">
       <Card>
