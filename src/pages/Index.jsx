@@ -13,7 +13,7 @@ const Index = () => {
   const [objectron, setObjectron] = useState(null);
   const [roi, setRoi] = useState({ x: 0, y: 0, width: window.innerWidth / 2, height: window.innerHeight });
   const detectedObjects = useRef(new Set());
-  const [objectCounts, setObjectCounts] = useState({ bottle: 0, can: 0, cardboard: 0, 'glass bottle': 0 });
+  const [objectCounts, setObjectCounts] = useState({ shoe: 0 });
 
   const loadModel = async () => {
     const objectron = new Objectron({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/objectron/${file}`});
