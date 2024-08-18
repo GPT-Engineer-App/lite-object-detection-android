@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const annotationsDir = path.join(__dirname, 'annotations');
-const framesDir = path.join(__dirname, 'frames');
-const outputDir = path.join(__dirname, 'filtered_dataset');
+const annotationsDir = path.join(__dirname, '..', '..', 'annotations');
+const framesDir = path.join(__dirname, '..', '..', 'frames');
+const outputDir = path.join(__dirname, '..', '..', 'filtered_dataset');
 
 // Create output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {

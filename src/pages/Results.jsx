@@ -28,11 +28,15 @@ const Results = () => {
         <CardContent>
           <div className="mt-4">
             <h2 className="text-2xl">Detected Objects</h2>
-            <ul>
-              {Object.entries(data.objectCounts).map(([objectClass, count]) => (
-                <li key={objectClass}>{objectClass}: {count}</li>
-              ))}
-            </ul>
+            {data && data.objectCounts ? (
+              <ul>
+                {Object.entries(data.objectCounts).map(([objectClass, count]) => (
+                  <li key={objectClass}>{objectClass}: {count}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>No detection results available.</p>
+            )}
           </div>
         </CardContent>
       </Card>

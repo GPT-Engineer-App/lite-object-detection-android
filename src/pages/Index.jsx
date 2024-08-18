@@ -18,7 +18,7 @@ const Index = () => {
   const loadModel = async () => {
     const objectron = new Objectron({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/objectron/${file}`});
     objectron.setOptions({
-      model: 'Shoe',
+      modelName: 'Shoe',
       maxNumObjects: 5,
     });
     objectron.onResults(onResults);

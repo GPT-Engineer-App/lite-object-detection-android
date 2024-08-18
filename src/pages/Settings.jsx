@@ -14,7 +14,7 @@ const Settings = () => {
   });
 
   const handleFolderSelection = (event) => {
-    const selectedFolder = event.target.files[0].path;
+    const selectedFolder = event.target.files[0].webkitRelativePath.split('/')[0];
     setFolderPath(selectedFolder);
     toast.success(`Selected folder: ${selectedFolder}`);
   };
